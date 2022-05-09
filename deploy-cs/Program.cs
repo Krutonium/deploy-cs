@@ -17,8 +17,8 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
             string directory = GetFlakeDir();
             if (!File.Exists(directory + "./targets.json"))
             {
-                Console.WriteLine("No targets.json found in " + directory);
-                Console.WriteLine("Creating an example entry and exiting. Please edit it!");
+                Console.WriteLine("No targets.json found.");
+                Console.WriteLine("Creating an example entry and exiting. It'll be in /etc/nixos/targets.json. Please edit it!");
                 Targets t = new Targets
                 {
                     Devices = new List<Device>()
@@ -31,7 +31,7 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
                     Comment = "This is an example device. This comment field isn't actually used in the program, but is included for your convenience."
                 };
                 t.Devices.Add(d);
-                File.WriteAllText(directory + "./targets.json" ,JsonConvert.SerializeObject(t, Formatting.Indented));
+                File.WriteAllText("/etc/nixos/targets.json" ,JsonConvert.SerializeObject(t, Formatting.Indented));
                 Environment.Exit(1);
             }
             UpdateFlake(directory);
