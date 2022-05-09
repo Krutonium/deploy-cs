@@ -40,7 +40,7 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
             if (devices.ParallelDeploy)
             {
 
-                Console.WriteLine("Deplying to all devices");
+                Console.WriteLine("Deploying to all devices");
                 Console.Title = "Mass Deployment in Progress";  
                 List<Task> tasks = new List<Task>();
                 foreach (var d in devices.Devices)
