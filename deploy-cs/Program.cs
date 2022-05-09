@@ -163,17 +163,11 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
             psi.Arguments = "flake update --commit-lock-file";
             psi.WorkingDirectory = directory;
             psi.UseShellExecute = false;
-            psi.RedirectStandardOutput = true;
-            psi.RedirectStandardError = true;
             psi.CreateNoWindow = true;
             Process p = new Process();
             p.StartInfo = psi;
             p.Start();
             p.WaitForExit();
-            if (p.ExitCode != 0)
-            {
-                Console.WriteLine("Error: " + p.StandardError.ReadToEnd());
-            }
             GitPush(directory);
         }
     }
