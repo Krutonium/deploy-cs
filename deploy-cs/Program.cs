@@ -72,7 +72,7 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
             string flakeDir = "";
             if (File.Exists("flake.nix"))
             {
-                flakeDir = ".";
+                flakeDir = Directory.GetCurrentDirectory();
             }
             else
             {

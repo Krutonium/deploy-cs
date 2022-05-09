@@ -19,6 +19,9 @@
       <Content Include="..\package.nix">
         <Link>package.nix</Link>
       </Content>
+      <Content Include="..\README.md">
+        <Link>README.md</Link>
+      </Content>
     </ItemGroup>
 
 </Project>

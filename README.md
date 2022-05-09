@@ -20,18 +20,22 @@ outputs = { ..., ..., deploy-cs }:
 And then in your machine specific definitions:
 
 ```
-nixpkgs.overlays = [
-  (self: super: {
-    deploy-cs = deploy-cs.defaultPackage.x86_64-linux;
-  })
-];
+modules = [
+   ... other stuff...
+   ({ pkgs, ... }: {
+     nixpkgs.overlays = [
+       (self: super: {
+          deploy-cs = deploy-cs.defaultPackage.x86_64-linux;
+       })
+     ];
+   })
 ```
 
 And finally
 
 ```
 environment.systemPackages = [
-  pkgs.BetterFanController
+  pkgs.deploy-cs
 ];
 ```
 
