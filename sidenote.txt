@@ -1,0 +1,8 @@
+Packaging on NixOS i've found to be annoying for C# because there's no clear solution for dependencies.
+
+Therefore, here are the steps I took:
+
+dotnet restore --packages ./deps -f
+nix-shell -p nuget-to-nix
+nuget-to-nix ./deps > deps.nix
+rm -rd ./deps
