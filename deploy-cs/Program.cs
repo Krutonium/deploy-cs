@@ -39,23 +39,22 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
             var devices = JsonConvert.DeserializeObject<Targets>(File.ReadAllText(directory + "./targets.json"));
             if (devices.ParallelDeploy)
             {
-                foreach(var device in devices.Devices)
-                {
-                    Console.WriteLine("Deplying to all devices");
-                    Console.Title = "Mass Deployment in Progress";
-                    List<Task> tasks = new List<Task>();
-                    foreach (var d in devices.Devices)
-                    {
-                        tasks.Add(new Task (() => Deploy(directory, device, devices.BuildHost, devices.BuildHostEnabled, true)));
-                    }
 
-                    foreach (var task in tasks)
-                    {
-                        task.Start();
-                    }
-                    Task.WaitAll(tasks.ToArray());
-                    Console.WriteLine("Deployment complete");
+                Console.WriteLine("Deplying to all devices");
+                Console.Title = "Mass Deployment in Progress";  
+                List<Task> tasks = new List<Task>();
+                foreach (var d in devices.Devices)
+                {
+                        tasks.Add(new Task (() => Deploy(directory, d, devices.BuildHost, devices.BuildHostEnabled, true)));
                 }
+
+                foreach (var task in tasks)
+                {
+                    task.Start();
+                }
+                Task.WaitAll(tasks.ToArray());
+                Console.WriteLine("Deployment complete");
+                
             }
             else
             {
