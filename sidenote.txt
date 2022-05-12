@@ -6,3 +6,4 @@ dotnet restore --packages ./deps -f
 nix-shell -p nuget-to-nix
 nuget-to-nix ./deps > deps.nix
 rm -rd ./deps
+Then open deps.nix and replace `name` with `pname`.
