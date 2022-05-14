@@ -6,6 +6,13 @@ internal class Deploy
 {
     internal void DoDeploy(string directory, Device d, Device buildHost, bool buildHostEnabled, bool quiet_unless_error = false) 
     {
+        Console.WriteLine("Checking if {0} is online", d.Name);
+        bool online = new targetCheck().checkIfHostOnline(d.Ip);
+        if (!online)
+        {
+            Console.WriteLine("{0} is offline", d.Name);
+            return;
+        }
         Console.WriteLine("Deploying to {0}", d.Name);
         string arg = "";
         if (buildHostEnabled)
