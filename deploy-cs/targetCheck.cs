@@ -12,7 +12,7 @@ public class targetCheck
         client.Connect(host, 22);
         NetworkStream stream = client.GetStream();
         StreamReader reader = new StreamReader(stream);
-        string ssh = reader.ReadToEnd();
+        string ssh = reader.ReadLine();
         client.Close();
         if (ssh.Contains("SSH"))
         {
