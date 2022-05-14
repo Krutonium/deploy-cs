@@ -15,20 +15,19 @@ internal class Deploy
         }
         Console.WriteLine("Deploying to {0}", d.Name);
         string arg = "";
-        string addRootArg = "--add-root";
         if (buildHostEnabled)
         {
             arg = $"--flake .#{d.Name} --target-host {d.User}@{d.Ip} --build-host {buildHost.User}@{buildHost.Ip} switch --use-remote-sudo";
+            if (addRoot)
+            {
+                arg = $"{arg} --add-root";
+            }
         }
         else
         {
             arg = $"--flake .#{d.Name} --target-host {d.User}@{d.Ip} switch --use-remote-sudo";
         }
-        if (addRoot && buildHostEnabled)
-        {
-            arg = $"{arg} {addRootArg}";
-        }
-        
+
         ProcessStartInfo startInfo = new()
         {
             FileName = "nixos-rebuild",
