@@ -1,4 +1,5 @@
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace deploy_cs;
 
@@ -6,12 +7,20 @@ public class targetCheck
 {
     internal bool checkIfHostOnline(string host)
     {
-        var ping = new Ping();
-        var result = ping.Send(host);
-        if (result.Status != System.Net.NetworkInformation.IPStatus.Success)
+        // Check if host is online by connecting to port 22 and looking for "SSH"
+        TcpClient client = new TcpClient();
+        client.Connect(host, 22);
+        NetworkStream stream = client.GetStream();
+        StreamReader reader = new StreamReader(stream);
+        string ssh = reader.ReadToEnd();
+        client.Close();
+        if (ssh.Contains("SSH"))
+        {
+            return true;
+        }
+        else
         {
             return false;
         }
-        return true;
     }
 }
