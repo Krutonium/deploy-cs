@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
 
 namespace deploy_cs;
@@ -29,6 +30,17 @@ public class GetTargets
         else if (File.Exists("/etc/nixos/targets.json"))
         {
             flakeDir = "/etc/nixos/"; 
+        } 
+        else if (File.Exists(Environment.SpecialFolder.UserProfile + "/NixOS/targets.json"))
+        {
+            flakeDir = Environment.SpecialFolder.UserProfile + "/NixOS/";
+        }
+        // ^ This is where I keep my config, and I've seen others with this as well.
+        else
+        {
+            Console.WriteLine("No targets.json found.");
+            GenerateConfig();
+            Environment.Exit(1);
         }
 
         if (flakeDir == "")
@@ -55,6 +67,16 @@ public class GetTargets
             Comment = "This is an example device. This comment field isn't actually used in the program, but is included for your convenience."
         };
         t.Devices.Add(d);
-        File.WriteAllText("/etc/nixos/targets.json" ,JsonConvert.SerializeObject(t, Formatting.Indented));
-    }
+        try
+        {
+            File.WriteAllText("/etc/nixos/targets.json" ,JsonConvert.SerializeObject(t, Formatting.Indented));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Couldn't write to /etc/nixos/targets.json. Please make sure you have write permissions to /etc/nixos/ and try again.");
+            Console.WriteLine("Or, alternatively, you can run this program in a directory with targets.json.");
+            Environment.Exit(2);
+        }
+        Environment.Exit(1);
+    } 
 }
