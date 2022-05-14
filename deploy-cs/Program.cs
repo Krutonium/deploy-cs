@@ -25,7 +25,7 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
                 List<Task> tasks = new List<Task>();
                 foreach (var d in devices.Devices)
                 {
-                    var Task = new Task(() => new Deploy().DoDeploy(directory, d, devices.BuildHost, devices.BuildHostEnabled, true));
+                    var Task = new Task(() => new Deploy().DoDeploy(directory, d, devices.BuildHost, devices.BuildHostEnabled, addRoot: devices.AddRoot, quiet_unless_error:false));
                     System.Threading.Thread.Sleep(1000);
                     Task.Start();
                     tasks.Add(Task);
