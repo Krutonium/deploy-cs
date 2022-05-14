@@ -12,6 +12,7 @@ public class Targets
     };
 
     public bool BuildHostEnabled = false;
+    public bool AddRoot = true;
     public bool ParallelDeploy = true;
 }
 

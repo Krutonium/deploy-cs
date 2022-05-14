@@ -4,7 +4,7 @@ namespace deploy_cs;
 
 internal class Deploy
 {
-    internal void DoDeploy(string directory, Device d, Device buildHost, bool buildHostEnabled, bool quiet_unless_error = false) 
+    internal void DoDeploy(string directory, Device d, Device buildHost, bool buildHostEnabled, bool addRoot = false, bool quiet_unless_error = false) 
     {
         Console.WriteLine("Checking if {0} is online", d.Name);
         bool online = new targetCheck().checkIfHostOnline(d.Ip);
@@ -15,6 +15,7 @@ internal class Deploy
         }
         Console.WriteLine("Deploying to {0}", d.Name);
         string arg = "";
+        string addRootArg = "--add-root";
         if (buildHostEnabled)
         {
             arg = $"--flake .#{d.Name} --target-host {d.User}@{d.Ip} --build-host {buildHost.User}@{buildHost.Ip} switch --use-remote-sudo";
@@ -23,6 +24,11 @@ internal class Deploy
         {
             arg = $"--flake .#{d.Name} --target-host {d.User}@{d.Ip} switch --use-remote-sudo";
         }
+        if (addRoot && buildHostEnabled)
+        {
+            arg = $"{arg} {addRootArg}";
+        }
+        
         ProcessStartInfo startInfo = new()
         {
             FileName = "nixos-rebuild",
