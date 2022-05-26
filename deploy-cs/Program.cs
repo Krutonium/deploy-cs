@@ -3,6 +3,14 @@ using Newtonsoft.Json;
 
 namespace deploy_cs // Note: actual namespace depends on the project name.
 {
+    
+    
+    //TODO:
+    // - Build all configurations at the same time using
+    // nixos-rebuild --flake .#device1 --flake .#device2 --flake --no-link --buildHosts build
+    // Experiment with perhaps merging multiple deployments into one?
+
+
     internal class Program
     {
         //https://nixos.wiki/wiki/Flakes
