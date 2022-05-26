@@ -14,7 +14,8 @@ internal static class GitSupport
         GitAction(directory, "commit -m \"deploy\"");
         GitAction(directory, "push");
     }
-    internal static void GitAction(string directory, string action)
+
+    private static void GitAction(string directory, string action)
     {
         ProcessStartInfo startInfo = new ProcessStartInfo();
         startInfo.FileName = "git";

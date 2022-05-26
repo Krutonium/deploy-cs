@@ -17,20 +17,17 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
             string directory = GetTargets.GetFlakeDir();
             UpdateFlake(directory);
             var devices = GetTargets.AcquireTargets(directory);
+            //Get list of Online Devices
+            var onlineDevices = new targetCheck().GetOnlineDevices(devices.Devices);
+            //Get list of Build Hosts
+            var buildHosts = new targetCheck().GetBuildHosts(devices.Devices);
             if (devices.ParallelDeploy)
             {
-
-                Console.WriteLine("Deploying to all devices");
-                Console.Title = "Mass Deployment in Progress";  
-                List<Task> tasks = new List<Task>();
-                foreach (var d in devices.Devices)
+                //Parallel.Foreach Deploy each Device
+                Parallel.ForEach(onlineDevices, (device) =>
                 {
-                    var Task = new Task(() => new Deploy().DoDeploy(directory, d, devices.BuildHost, devices.BuildHostEnabled, quiet_unless_error:false));
-                    System.Threading.Thread.Sleep(1000);
-                    Task.Start();
-                    tasks.Add(Task);
-                }
-                Task.WaitAll(tasks.ToArray());
+                    new Deploy().DoDeploy(directory, device, buildHosts, devices.BuildHostEnabled);
+                });
                 Console.WriteLine("Deployment complete");
             }
             else
@@ -38,7 +35,7 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
                 foreach (var device in devices.Devices)
                 {
                     Console.Title = device.Name;
-                    new Deploy().DoDeploy(directory, device, devices.BuildHost, devices.BuildHostEnabled);
+                    new Deploy().DoDeploy(directory, device, buildHosts, devices.BuildHostEnabled);
                 }
             }
         }

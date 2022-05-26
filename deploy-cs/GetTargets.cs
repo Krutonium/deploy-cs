@@ -78,5 +78,5 @@ public class GetTargets
             Environment.Exit(2);
         }
         Environment.Exit(1);
-    } 
+    }
 }
