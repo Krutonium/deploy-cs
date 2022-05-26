@@ -20,7 +20,7 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
             //Get list of Online Devices
             var onlineDevices = new targetCheck().GetOnlineDevices(devices.Devices);
             //Get list of Build Hosts
-            var buildHosts = new targetCheck().GetBuildHosts(devices.Devices);
+            var buildHosts = new targetCheck().GetBuildHosts(onlineDevices);
             if (devices.ParallelDeploy)
             {
                 //Parallel.Foreach Deploy each Device
