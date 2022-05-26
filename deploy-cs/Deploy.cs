@@ -41,6 +41,7 @@ internal class Deploy
         p.BeginOutputReadLine();
         p.BeginErrorReadLine();
         p.WaitForExit();
+        p.Close();
         Console.WriteLine("Deploy Complete on {0}", d.Name);
     }
 }
