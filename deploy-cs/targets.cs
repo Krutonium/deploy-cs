@@ -10,10 +10,11 @@ public class Targets
 
 public class Device
 {
-    public string Name;
-    public string Ip;
-    public string User;
-    public bool isBuildHost;
-    public bool isDeployTarget;
-    public string Comment;
+    // ReSharper disable here InconsistentNaming
+    public string Name = "";
+    public string Ip = "";
+    public string User = "";
+    public bool isBuildHost = false;
+    public bool isDeployTarget = false;
+    public string Comment = "It forced me to do this to remove warnings.";
 }
