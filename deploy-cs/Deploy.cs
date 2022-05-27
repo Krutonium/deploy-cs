@@ -24,7 +24,7 @@ internal class Deploy
             TargetHostString += $"--flake .#{th.Name} --target-host {th.User}@{th.Ip} ";
         }
         
-        string arg = $"{TargetHostString} {BuildHostString} switch --use-remote-sudo -Q";
+        string arg = $"{TargetHostString} {BuildHostString} switch --use-remote-sudo";
         
 
         ProcessStartInfo startInfo = new()
