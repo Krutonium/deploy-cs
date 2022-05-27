@@ -16,7 +16,7 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
         //https://nixos.wiki/wiki/Flakes
         static void Main(string[] args)
         {
-            Console.WriteLine("Running Version 1");
+            Console.WriteLine("Running Version Apollo Astronaut");
             Program p = new Program();
             p.BetterMain(args);
         }
