@@ -37,12 +37,7 @@ internal class Deploy
             RedirectStandardOutput = true,
             RedirectStandardError = true
         };
-        
-        Console.WriteLine("Command to be executed:");
-        Console.WriteLine($"{startInfo.FileName} {startInfo.Arguments}");
-        Console.WriteLine("---");
-        Console.WriteLine(TargetHostString);
-        
+
         Process p = new Process() { StartInfo = startInfo };
         p.OutputDataReceived += (sender, e) => Console.WriteLine($"{e.Data}");
         p.ErrorDataReceived += (sender, e) => Console.WriteLine($"{e.Data}");
