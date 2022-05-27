@@ -8,6 +8,7 @@ internal class Deploy
     {
         Console.WriteLine("Deploying to " + targetHosts.Count + " devices");
 
+        // ReSharper disable here InconsistentNaming
         string BuildHostString = "";
         if(buildHostEnabled)
         {

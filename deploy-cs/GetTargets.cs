@@ -16,7 +16,7 @@ public class GetTargets
             return null;
         } else {
             string json = File.ReadAllText(Target);
-            Targets t = JsonConvert.DeserializeObject<Targets>(json);
+            Targets t = JsonConvert.DeserializeObject<Targets>(json)!;
             return t;
         };
     }

@@ -17,12 +17,14 @@ internal static class GitSupport
 
     private static void GitAction(string directory, string action)
     {
-        ProcessStartInfo startInfo = new ProcessStartInfo();
-        startInfo.FileName = "git";
-        startInfo.Arguments = action;
-        startInfo.WorkingDirectory = directory;
-        startInfo.UseShellExecute = false;
-        startInfo.CreateNoWindow = true;
+        ProcessStartInfo startInfo = new ProcessStartInfo
+        {
+            FileName = "git",
+            Arguments = action,
+            WorkingDirectory = directory,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
         Process process = new Process();
         process.StartInfo = startInfo;
         process.Start();

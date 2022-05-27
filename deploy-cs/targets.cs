@@ -2,7 +2,7 @@ namespace deploy_cs;
 
 public class Targets
 {
-    public List<Device> Devices;
+    public List<Device> Devices = new List<Device>();
 
     public bool BuildHostEnabled = false;
     public bool ParallelDeploy = true;
