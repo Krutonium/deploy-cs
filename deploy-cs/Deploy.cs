@@ -21,10 +21,10 @@ internal class Deploy
         string TargetHostString = "";
         foreach (var th in targetHosts)
         {
-            TargetHostString += $"--flake .#{th.Name} --target-host {th.User}@{th.Ip} {BuildHostString} ";
+            TargetHostString += $"--flake .#{th.Name} --target-host {th.User}@{th.Ip} {BuildHostString} switch";
         }
         
-        string arg = $"{TargetHostString} switch --use-remote-sudo";
+        string arg = $"{TargetHostString} --use-remote-sudo";
         
 
         ProcessStartInfo startInfo = new()
