@@ -4,25 +4,28 @@ namespace deploy_cs;
 
 internal class Deploy
 {
-    internal void DoDeploy(string directory, Device d, List<Device> buildHosts, bool buildHostEnabled) 
+    internal void DoDeploy(string directory, List<Device> targetHosts, List<Device> buildHosts, bool buildHostEnabled) 
     {
-        Console.WriteLine("Deploying to {0}", d.Name);
+        Console.WriteLine("Deploying to " + targetHosts.Count + " devices");
 
         string BuildHostString = "";
-        foreach (var bh in buildHosts)
+        if(buildHostEnabled)
         {
-            BuildHostString += $"--build-host {bh.User}@{bh.Ip} ";
+            Console.WriteLine("Building on " + buildHosts.Count + " devices");
+            foreach (var bh in buildHosts)
+            {
+                BuildHostString += $"--build-host {bh.User}@{bh.Ip} ";
+            }
+        }
+
+        string TargetHostString = "";
+        foreach (var th in targetHosts)
+        {
+            TargetHostString += $"--flake .#{th.Name} --target-host {th.User}@{th.Ip} ";
         }
         
-        string arg = "";
-        if (buildHostEnabled)
-        {
-            arg = $"--flake .#{d.Name} --target-host {d.User}@{d.Ip} {BuildHostString} switch --use-remote-sudo";
-        }
-        else
-        {
-            arg = $"--flake .#{d.Name} --target-host {d.User}@{d.Ip} switch --use-remote-sudo";
-        }
+        string arg = $"{TargetHostString} {BuildHostString} switch --use-remote-sudo";
+        
 
         ProcessStartInfo startInfo = new()
         {
@@ -35,13 +38,13 @@ internal class Deploy
             RedirectStandardError = true
         };
         Process p = new Process() { StartInfo = startInfo };
-        p.OutputDataReceived += (sender, e) => Console.WriteLine($"[{d.Name}] {e.Data}");
-        p.ErrorDataReceived += (sender, e) => Console.WriteLine($"[{d.Name}] {e.Data}");
+        p.OutputDataReceived += (sender, e) => Console.WriteLine($"{e.Data}");
+        p.ErrorDataReceived += (sender, e) => Console.WriteLine($"{e.Data}");
         p.Start();
         p.BeginOutputReadLine();
         p.BeginErrorReadLine();
         p.WaitForExit();
         p.Close();
-        Console.WriteLine("Deploy Complete on {0}", d.Name);
+        Console.WriteLine("Deployment complete");
     }
 }

@@ -7,7 +7,7 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
     
     //TODO:
     // - Build all configurations at the same time using
-    // nixos-rebuild --flake .#device1 --flake .#device2 --flake --no-link --buildHosts build
+    // nixos-rebuild --flake .#device1 --flake .#device2 --no-link --buildHosts build
     // Experiment with perhaps merging multiple deployments into one?
 
 
@@ -31,21 +31,20 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
             var buildHosts = new targetCheck().GetBuildHosts(onlineDevices);
             if (devices.ParallelDeploy)
             {
-                //Parallel.Foreach Deploy each Device
-                Parallel.ForEach(onlineDevices, (device) =>
-                {
-                    new Deploy().DoDeploy(directory, device, buildHosts, devices.BuildHostEnabled);
-                });
-                Console.WriteLine("Deployment complete");
+                new Deploy().DoDeploy(directory, onlineDevices, buildHosts, devices.BuildHostEnabled);
             }
             else
             {
                 foreach (var device in devices.Devices)
                 {
                     Console.Title = device.Name;
-                    new Deploy().DoDeploy(directory, device, buildHosts, devices.BuildHostEnabled);
+                    List<Device> deployTo = new List<Device> {device};
+                    new Deploy().DoDeploy(directory, deployTo, buildHosts, devices.BuildHostEnabled);
                 }
             }
+            Console.WriteLine("Program Complete");
+            Console.Beep();
+            Environment.Exit(0);
         }
 
 

@@ -64,6 +64,8 @@ public class GetTargets
             Name = "Example Device",
             Ip = "192.168.0.1",
             User = "root",
+            isBuildHost = true,
+            isDeployTarget = true,
             Comment = "This is an example device. This comment field isn't actually used in the program, but is included for your convenience."
         };
         t.Devices.Add(d);
