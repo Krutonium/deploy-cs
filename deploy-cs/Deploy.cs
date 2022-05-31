@@ -27,6 +27,8 @@ internal class Deploy
         
         string arg = $"{TargetHostString} --use-remote-sudo";
         
+        Console.WriteLine(arg);
+        Console.ReadLine();
 
         ProcessStartInfo startInfo = new()
         {
