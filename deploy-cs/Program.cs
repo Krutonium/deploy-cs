@@ -36,7 +36,7 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
             }
             else
             {
-                foreach (var device in devices.Devices)
+                foreach (var device in onlineDevices)
                 {
                     Console.Title = device.Name;
                     List<Device> deployTo = new List<Device> {device};
