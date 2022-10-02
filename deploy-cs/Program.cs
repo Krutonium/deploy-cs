@@ -16,7 +16,7 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
         //https://nixos.wiki/wiki/Flakes
         static void Main(string[] args)
         {
-            Console.WriteLine("Running Version Apollo Astronaut");
+            Console.WriteLine("Running Version Basically Balogna");
             Program p = new Program();
             p.BetterMain(args);
         }
@@ -30,18 +30,10 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
             var onlineDevices = new targetCheck().GetOnlineDevices(devices.Devices);
             //Get list of Build Hosts
             var buildHosts = new targetCheck().GetBuildHosts(onlineDevices);
-            if (devices.ParallelDeploy)
+            foreach (var device in onlineDevices)
             {
-                new Deploy().DoDeploy(directory, onlineDevices, buildHosts, devices.BuildHostEnabled);
-            }
-            else
-            {
-                foreach (var device in onlineDevices)
-                {
-                    Console.Title = device.Name;
-                    List<Device> deployTo = new List<Device> {device};
-                    new Deploy().DoDeploy(directory, deployTo, buildHosts, devices.BuildHostEnabled);
-                }
+                Console.Title = device.Name;
+                new Deploy().DoDeploy(directory, device);
             }
             Console.WriteLine("Program Complete");
             Console.Beep();
