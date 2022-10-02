@@ -11,7 +11,11 @@ public class targetCheck
         {
             // Check if host is online by connecting to port 22 and looking for "SSH"
             TcpClient client = new TcpClient();
-            client.Connect(host, 22);
+            if(!client.ConnectAsync(host, 22).Wait(1000)) //Only try connecting for 1 second.
+            {
+                //Connection Failed
+                return false;
+            }
             NetworkStream stream = client.GetStream();
             StreamReader reader = new StreamReader(stream);
             stream.ReadTimeout = 250; //250ms timeout
