@@ -28,8 +28,6 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
             var devices = GetTargets.AcquireTargets(directory);
             //Get list of Online Devices
             var onlineDevices = new targetCheck().GetOnlineDevices(devices.Devices);
-            //Get list of Build Hosts
-            var buildHosts = new targetCheck().GetBuildHosts(onlineDevices);
             foreach (var device in onlineDevices)
             {
                 Console.Title = device.Name;

@@ -52,18 +52,4 @@ public class targetCheck
         });
         return onlineDevices;
     }
-
-    public List<Device> GetBuildHosts(List<Device> devices)
-    {
-        List<Device> buildHosts = new List<Device>();
-        foreach(var device in devices)
-        {
-            if (device.isBuildHost)
-            {
-                buildHosts.Add(device);
-                Console.WriteLine("Device " + device.Name + " is a build host");
-            }
-        }
-        return buildHosts;
-    }
 }
