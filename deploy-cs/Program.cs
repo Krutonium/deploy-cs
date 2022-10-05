@@ -47,7 +47,7 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
             //Quickly Format
             ProcessStartInfo format = new ProcessStartInfo
             {
-                FileName = "nixpkgs-format",
+                FileName = "nixpkgs-fmt",
                 Arguments = ".",
                 WorkingDirectory = directory,
                 UseShellExecute = false,
