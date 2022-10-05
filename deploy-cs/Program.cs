@@ -26,7 +26,6 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
             string directory = GetTargets.GetFlakeDir();
             UpdateFlake(directory);
             var devices = GetTargets.AcquireTargets(directory);
-            //Get list of Online Devices
             var onlineDevices = new targetCheck().GetOnlineDevices(devices.Devices);
             foreach (var device in onlineDevices)
             {
@@ -42,13 +41,31 @@ namespace deploy_cs // Note: actual namespace depends on the project name.
 
         private void UpdateFlake(string directory)
         {
+            
             GitSupport.GitPull(directory);
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.FileName = "nix";
-            psi.Arguments = "flake update --commit-lock-file";
-            psi.WorkingDirectory = directory;
-            psi.UseShellExecute = false;
-            psi.CreateNoWindow = true;
+            
+            //Quickly Format
+            ProcessStartInfo format = new ProcessStartInfo
+            {
+                FileName = "nixpkgs-format",
+                Arguments = ".",
+                WorkingDirectory = directory,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+            Process formatProcess = Process.Start(format);
+            formatProcess.WaitForExit();
+            
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = "nix",
+                Arguments = "flake update --commit-lock-file",
+                WorkingDirectory = directory,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
             Process p = new Process();
             p.StartInfo = psi;
             p.Start();
