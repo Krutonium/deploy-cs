@@ -39,5 +39,30 @@ environment.systemPackages = [
 ];
 ```
 
+
+Finally, run the application once, and it'll generate a `targets.json` file. You should open it up, and edit it. For example:
+```
+{
+  "Devices": [
+    {
+      "Name": "uWebServer",
+      "Ip": "192.168.0.10",
+      "User": "krutonium",
+      "Comment": "This is my Web Server. It hosts many things."
+    },
+    {
+      "Name": "uGamingPC",
+      "Ip": "192.168.0.40",
+      "User": "krutonium",
+      "Comment": "Gaming PC - For Gaming and software development"
+    }
+  ]
+}
+```
+
+The IP can also be a hostname if you have reliable hostnames on your LAN. My Modem/Router combo doesn't. Could also technically be external.
+
+This tool also assumes that the running account has PubKey Passwordless access to the target PC's.
+
 :3 Enjoy!
 
