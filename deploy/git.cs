@@ -10,6 +10,8 @@ public class git
     {
         info.Arguments = "pull";
         _process.Start();
+        _process.BeginErrorReadLine();
+        _process.BeginOutputReadLine();
         _process.WaitForExit();
     }
 
@@ -17,6 +19,8 @@ public class git
     {
         info.Arguments = "push";
         _process.Start();
+        _process.BeginErrorReadLine();
+        _process.BeginOutputReadLine();
         _process.WaitForExit();
     }
 
