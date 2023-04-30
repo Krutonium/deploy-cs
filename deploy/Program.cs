@@ -49,6 +49,8 @@ namespace deploy
                 process.ErrorDataReceived +=
                     (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
                 process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
                 process.WaitForExit();
                 if (process is {ExitCode: 0})
                 {
