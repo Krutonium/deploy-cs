@@ -23,8 +23,6 @@ public class git
     {
         info.Arguments = "add .";
         _process.Start();
-        _process.BeginErrorReadLine();
-        _process.BeginOutputReadLine();
         _process.WaitForExit();
     }
     private static void gitCommit()
