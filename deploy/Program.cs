@@ -31,7 +31,43 @@ namespace deploy
             Console.WriteLine("Deploying to all online devices");
             //Deploy in parallel to all online devices (up to CPU count, iirc)
             
-            Parallel.ForEach(onlineDevices, _parallelOptions, device =>
+            //Build Derivations
+            Console.WriteLine("Building Derivations");
+            var builtDevices = new List<Machine>();
+            foreach (var device in onlineDevices)
+            {
+                Console.WriteLine("Building {0}", device.Name);
+                ProcessStartInfo psi = new ProcessStartInfo();
+                psi.FileName = "nixos-rebuild";
+                psi.Arguments = $"build --flake .#{device.Name} --no-link";
+                psi.RedirectStandardOutput = true;
+                psi.RedirectStandardError = true;
+                psi.UseShellExecute = false;
+                psi.CreateNoWindow = true;
+                psi.WorkingDirectory = Path.GetFullPath(".");
+                Process process = new Process();
+                process.StartInfo = psi;
+                process.OutputDataReceived +=
+                    (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
+                process.ErrorDataReceived +=
+                    (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
+                process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+                process.WaitForExit();
+                if (process is {ExitCode: 0})
+                {
+                    Console.WriteLine("Built {0}", device.Name);
+                    builtDevices.Add(device);
+                }
+                else
+                {
+                    Console.WriteLine("Failed to build {0}", device.Name);
+                }
+                process.Close();
+            }
+            
+            Parallel.ForEach(builtDevices, _parallelOptions, device =>
             {
                 Console.WriteLine("Deploying to {0}", device.Name);
                 ProcessStartInfo psi = new ProcessStartInfo();
