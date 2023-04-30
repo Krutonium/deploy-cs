@@ -71,7 +71,7 @@ namespace deploy
             Parallel.ForEach(config._machines, _parallelOptions, device => { 
                 ProcessStartInfo psi = new ProcessStartInfo();
                 psi.FileName = "nix";
-                psi.Arguments = "store ping ssh://" + device.Ip;
+                psi.Arguments = "store ping --store ssh://" + device.Ip;
                 Process process = Process.Start(psi) ?? throw new InvalidOperationException();
                 process?.WaitForExit();
                 if (process is {ExitCode: 0})
