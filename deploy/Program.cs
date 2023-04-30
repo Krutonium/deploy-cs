@@ -19,6 +19,8 @@ namespace deploy
                 Console.WriteLine("Please edit {0} and re-run the application", path);
                 Environment.Exit(1);
             }
+
+            git.gitSync(".");
             _parallelOptions.MaxDegreeOfParallelism = config.MaxParallel;
             var onlineDevices = OnlineDevices(config);
             Console.WriteLine("Online Devices: ");

@@ -1,12 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZWTVmz1VtMCXA6MIT4lFChh26TPeg+vjPeKSvQuo98TmkIfPbR+QFaRs2I9BkTmxhLTn7n/zD6q2pIOn0mcOyQ==",
+  "dgSpecHash": "ujbHScWiQq7yRPm6PREfQXtwkcixv9rgKfwVPacMZIOGbay7HblYntpZdHfs/gv+dQBQ956jeYg645Yuz7RLxQ==",
   "success": true,
   "projectFilePath": "/home/krutonium/RiderProjects/deploy-cs/deploy/deploy.csproj",
-  "expectedPackageFiles": [
-    "/home/krutonium/RiderProjects/deploy-cs/deps/microsoft.netcore.app.ref/6.0.14/microsoft.netcore.app.ref.6.0.14.nupkg.sha512",
-    "/home/krutonium/RiderProjects/deploy-cs/deps/microsoft.aspnetcore.app.ref/6.0.14/microsoft.aspnetcore.app.ref.6.0.14.nupkg.sha512",
-    "/home/krutonium/RiderProjects/deploy-cs/deps/microsoft.netcore.app.host.linux-x64/6.0.14/microsoft.netcore.app.host.linux-x64.6.0.14.nupkg.sha512"
-  ],
+  "expectedPackageFiles": [],
   "logs": []
 }

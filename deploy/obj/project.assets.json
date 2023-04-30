@@ -8,7 +8,7 @@
     "net6.0": []
   },
   "packageFolders": {
-    "/home/krutonium/RiderProjects/deploy-cs/deps": {}
+    "/home/krutonium/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
@@ -16,7 +16,7 @@
       "projectUniqueName": "/home/krutonium/RiderProjects/deploy-cs/deploy/deploy.csproj",
       "projectName": "deploy",
       "projectPath": "/home/krutonium/RiderProjects/deploy-cs/deploy/deploy.csproj",
-      "packagesPath": "/home/krutonium/RiderProjects/deploy-cs/deps",
+      "packagesPath": "/home/krutonium/.nuget/packages/",
       "outputPath": "/home/krutonium/RiderProjects/deploy-cs/deploy/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
@@ -54,26 +54,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[6.0.14, 6.0.14]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Host.linux-x64",
-            "version": "[6.0.14, 6.0.14]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[6.0.14, 6.0.14]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/nix/store/xa5l7l867drygrsna927vqzclklybm5f-dotnet-sdk-7.0.201/sdk/7.0.201/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/nix/store/cibla1xzy4jsp3v8b4c6jahka6q7ifpn-dotnet-sdk-6.0.403/sdk/6.0.403/RuntimeIdentifierGraph.json"
       }
     }
   }
