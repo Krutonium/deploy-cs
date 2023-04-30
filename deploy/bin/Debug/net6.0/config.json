@@ -1,9 +1,0 @@
-{
-  "_machines": [
-    {
-      "Name": "Example Machine",
-      "Ip": "1.1.1.1",
-      "Comment": "This is an example machine"
-    }
-  ]
-}

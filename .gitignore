@@ -1,4 +1,4 @@
 .idea
 .vs
-deploy-cs/obj/
-deploy-cs/bin/
+deploy/obj/
+deploy/bin/

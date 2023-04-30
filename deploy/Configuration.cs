@@ -20,9 +20,11 @@ partial class Program
             {
                 Name = "Example Machine",
                 Comment = "This is an example machine",
+                User = "root",
                 Ip = "1.1.1.1"
             };
             cfg._machines.Add(m);
+            cfg.MaxParallel = 1;
             JsonSerializerOptions? options = new JsonSerializerOptions();
             options.WriteIndented = true;
             options.IncludeFields = true;
@@ -35,8 +37,8 @@ partial class Program
 
     public class Config
     {
-        public List<Machine> _machines = new List<Machine>();
         public int MaxParallel;
+        public List<Machine> _machines = new List<Machine>();
     }
 
     public class Machine
