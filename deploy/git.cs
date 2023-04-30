@@ -13,6 +13,7 @@ public class git
         _process.BeginErrorReadLine();
         _process.BeginOutputReadLine();
         _process.WaitForExit();
+        _process.Close();
     }
 
     private static void gitPush()
@@ -22,6 +23,25 @@ public class git
         _process.BeginErrorReadLine();
         _process.BeginOutputReadLine();
         _process.WaitForExit();
+        _process.Close();
+    }
+    private static void gitAdd()
+    {
+        info.Arguments = "add .";
+        _process.Start();
+        _process.BeginErrorReadLine();
+        _process.BeginOutputReadLine();
+        _process.WaitForExit();
+        _process.Close();
+    }
+    private static void gitCommit()
+    {
+        info.Arguments = "commit";
+        _process.Start();
+        _process.BeginErrorReadLine();
+        _process.BeginOutputReadLine();
+        _process.WaitForExit();
+        _process.Close();
     }
 
     public static void gitSync(string path)
@@ -36,6 +56,8 @@ public class git
         info.RedirectStandardOutput = true;
         info.FileName = "git";
         info.WorkingDirectory = path;
+        gitAdd();
+        gitCommit();
         gitPull();
         gitPush();
     }
