@@ -20,7 +20,7 @@ namespace deploy
                 Environment.Exit(1);
             }
 
-            //git.gitSync(".");
+            git.gitSync(".");
             _parallelOptions.MaxDegreeOfParallelism = config.MaxParallel;
             var onlineDevices = OnlineDevices(config);
             Console.WriteLine("Online Devices: ");

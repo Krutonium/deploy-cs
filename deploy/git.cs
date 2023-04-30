@@ -27,7 +27,7 @@ public class git
     }
     private static void gitCommit()
     {
-        info.Arguments = "commit";
+        info.Arguments = "commit -m \"Deploy\"";
         _process.Start();
         _process.WaitForExit();
     }
