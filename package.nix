@@ -6,10 +6,10 @@ buildDotnetModule rec {
 
   src = ./.;
 
-  projectFile = "./deploy-cs.sln";
+  projectFile = "./deploy.sln";
   nugetDeps = ./deps.nix;
   dotnet-sdk = dotnetCorePackages.sdk_6_0;
   dotnet-runtime = dotnetCorePackages.sdk_6_0;
   dotnetFlags = [ "" ];
-  executables = [ "deploy-cs" ];
+  executables = [ "deploy" ];
 }
