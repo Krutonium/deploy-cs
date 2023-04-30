@@ -28,9 +28,7 @@ namespace deploy
             {
                 Console.WriteLine(dev.Name);
             }
-            Console.WriteLine("Deploying to all online devices");
-            //Deploy in parallel to all online devices (up to CPU count, iirc)
-            
+
             //Build Derivations
             Console.WriteLine("Building Derivations");
             var builtDevices = new List<Machine>();
@@ -38,7 +36,7 @@ namespace deploy
             {
                 Console.WriteLine("Building {0}", device.Name);
                 ProcessStartInfo psi = new ProcessStartInfo();
-                psi.FileName = "nixos-rebuild";
+                psi.FileName = "nix";
                 psi.Arguments = $"build --flake .#{device.Name} --no-link";
                 psi.RedirectStandardOutput = true;
                 psi.RedirectStandardError = true;
@@ -67,6 +65,8 @@ namespace deploy
                 process.Close();
             }
             
+            Console.WriteLine("Deploying to all online devices");
+            //Deploy in parallel to all online devices (up to CPU count, iirc)
             Parallel.ForEach(builtDevices, _parallelOptions, device =>
             {
                 Console.WriteLine("Deploying to {0}", device.Name);
