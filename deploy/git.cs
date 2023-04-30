@@ -10,20 +10,14 @@ public class git
     {
         info.Arguments = "pull";
         _process.Start();
-        _process.BeginErrorReadLine();
-        _process.BeginOutputReadLine();
         _process.WaitForExit();
-        _process.Close();
     }
 
     private static void gitPush()
     {
         info.Arguments = "push";
         _process.Start();
-        _process.BeginErrorReadLine();
-        _process.BeginOutputReadLine();
         _process.WaitForExit();
-        _process.Close();
     }
     private static void gitAdd()
     {
@@ -32,16 +26,12 @@ public class git
         _process.BeginErrorReadLine();
         _process.BeginOutputReadLine();
         _process.WaitForExit();
-        _process.Close();
     }
     private static void gitCommit()
     {
         info.Arguments = "commit";
         _process.Start();
-        _process.BeginErrorReadLine();
-        _process.BeginOutputReadLine();
         _process.WaitForExit();
-        _process.Close();
     }
 
     public static void gitSync(string path)
