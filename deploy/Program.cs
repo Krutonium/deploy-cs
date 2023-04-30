@@ -48,8 +48,6 @@ namespace deploy
                     (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
                 process.ErrorDataReceived +=
                     (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
-                process.BeginErrorReadLine();
-                process.BeginOutputReadLine();
                 process.Start();
                 process.WaitForExit();
                 if (process is {ExitCode: 0})
