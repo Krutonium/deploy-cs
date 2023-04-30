@@ -22,6 +22,7 @@ public class git
 
     public static void gitSync(string path)
     {
+        Console.WriteLine("Doing Git Sync");
         _process = new Process();
         info = new ProcessStartInfo();
         _process.StartInfo = info;
