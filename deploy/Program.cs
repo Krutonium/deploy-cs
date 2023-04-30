@@ -37,7 +37,7 @@ namespace deploy
                 Console.WriteLine("Building {0}", device.Name);
                 ProcessStartInfo psi = new ProcessStartInfo();
                 psi.FileName = "nix";
-                psi.Arguments = $"build --flake .#{device.Name} --no-link";
+                psi.Arguments = $"build .#{device.Name} --no-link";
                 psi.RedirectStandardOutput = true;
                 psi.RedirectStandardError = true;
                 psi.UseShellExecute = false;
