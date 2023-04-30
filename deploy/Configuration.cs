@@ -21,6 +21,7 @@ partial class Program
                 Name = "Example Machine",
                 Comment = "This is an example machine",
                 User = "root",
+                Verb = "switch",
                 Ip = "1.1.1.1"
             };
             cfg._machines.Add(m);
@@ -46,6 +47,7 @@ partial class Program
         public string Name;
         public string User;
         public string Ip;
+        public string Verb;
         public string Comment;
     }
 }
