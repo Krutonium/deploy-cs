@@ -36,7 +36,7 @@ namespace deploy
                 Console.WriteLine("Deploying to {0}", device.Name);
                 ProcessStartInfo psi = new ProcessStartInfo();
                 psi.FileName = "nixos-rebuild";
-                psi.Arguments = $"--flake .#{device.Name} --target-host ssh://{device.User}@{device.Ip} --use-remote-sudo " + device.Ip;
+                psi.Arguments = $"--flake .#{device.Name} --target-host ssh://{device.User}@{device.Ip} --use-remote-sudo";
                 psi.RedirectStandardOutput = true;
                 psi.RedirectStandardError = true;
                 psi.UseShellExecute = false;
