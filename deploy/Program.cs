@@ -66,7 +66,7 @@ namespace deploy
             }
             
             Console.WriteLine("Deploying to all online devices");
-            //Deploy in parallel to all online devices (up to CPU count, iirc)
+            //Deploy in parallel to all online devices (up to CPU count, iirc).
             Parallel.ForEach(builtDevices, _parallelOptions, device =>
             {
                 Console.WriteLine("Deploying to {0}", device.Name);
