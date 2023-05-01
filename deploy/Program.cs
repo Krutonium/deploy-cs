@@ -109,9 +109,13 @@ namespace deploy
                 psi.FileName = "nix";
                 psi.Arguments = "store ping --store ssh://" + device.Ip;
                 Process process = Process.Start(psi) ?? throw new InvalidOperationException();
-                process?.WaitForExit();
-                if (process is {ExitCode: 0})
-                { devices.Add(device); }; 
+                process?.WaitForExit(5000);
+                if (process is {HasExited: true})
+                {
+                    if (process is {ExitCode: 0})
+                    { devices.Add(device); }; 
+                }
+
             });
             return devices;
         }
