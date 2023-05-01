@@ -113,7 +113,11 @@ namespace deploy
                 if (process is {HasExited: true})
                 {
                     if (process is {ExitCode: 0})
-                    { devices.Add(device); }; 
+                    { devices.Add(device); };
+                }
+                else
+                {
+                    process?.Kill();
                 }
 
             });
