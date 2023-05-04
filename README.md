@@ -16,8 +16,6 @@ And then add it to your system's `flake.nix` like this:
 
 ```nix
 inputs = {
-  ...
-  ...
   deploy-cs.url = "github:Krutonium/deploy-cs";
   deploy-cs.inputs.nixpkgs.follows = "nixpkgs";
 }
@@ -115,7 +113,7 @@ The `_machines` array is where you define your machines. Each machine has the fo
 The IP can also be a hostname if you have reliable hostnames on your LAN. My Modem/Router combo doesn't. Could also technically be external.
 
 This tool requires that the account your SSHing into has passwordless sudo access, and the ability to switch without a password. If you don't have this, you can add it by adding the following to your `configuration.nix`:
-```
+```nix
   users.users.<username>.extraGroups = [ "wheel" ];
   security.sudo.wheelNeedsPassword = false;
 ```
