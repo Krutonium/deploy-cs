@@ -96,9 +96,12 @@ Inside `config.json` You'll see a default configuration with mostly nonsense val
 The `MaxParallel` value is the maximum number of machines to run at once. This is useful if you have a lot of machines and don't want to overload your network. It limits two things specifically:
   - The Number of computers to ping at the same time (to check if they're online and ready)
   - The number of computers to run `nixos-rebuild switch` on at the same time.
+One thing of note is that this is just the Maximum degrees of parallelism. It can and likely will be less, based on how many machines are online and ready at the same time, and the throughput of your CPU and network.
+
 
 Building each derivation is done one at a time, because Nix itself strugges with doing this without downloading the same package multiple times at the same time. Once it's built, it can push to however many machines you want at the same time.
 On the upside of this, if a package was already built for another system, it won't be built again, so if your fleet of computers use similar configurations, it'll be fast after the first couple of them.
+
 
 The `Update_Flake` value is a simple boolean for if you want it to automatically update your flake. This is useful if you want to keep it up to date.
 
