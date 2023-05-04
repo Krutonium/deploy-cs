@@ -22,7 +22,8 @@ namespace deploy
             if (config.Update_Flake)
             {
                 Console.WriteLine("Updating Flake Lockfile");
-                Process.Start("nix", "flake update --commit-lock-file");
+                Process.Start("nix", "flake update --commit-lock-file").WaitForExit();
+                
             }
             git.gitSync(".");
             _parallelOptions.MaxDegreeOfParallelism = config.MaxParallel;
