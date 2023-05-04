@@ -39,6 +39,7 @@ partial class Program
     public class Config
     {
         public int MaxParallel;
+        public bool Update_Flake = true;
         public List<Machine> _machines = new List<Machine>();
     }
 

@@ -28,6 +28,11 @@ namespace deploy
             {
                 Console.WriteLine(dev.Name);
             }
+            //Update Flake Lock if Enabled
+            if (config.Update_Flake)
+            {
+                Process.Start("nix", "flake update --commit-lock-file");
+            }
 
             //Build Derivations
             Console.WriteLine("Building Derivations");
