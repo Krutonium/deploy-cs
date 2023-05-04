@@ -98,6 +98,7 @@ The `MaxParallel` value is the maximum number of machines to run at once. This i
   - The number of computers to run `nixos-rebuild switch` on at the same time.
 
 Building each derivation is done one at a time, because Nix itself strugges with doing this without downloading the same package multiple times at the same time. Once it's built, it can push to however many machines you want at the same time.
+On the upside of this, if a package was already built for another system, it won't be built again, so if your fleet of computers use similar configurations, it'll be fast after the first couple of them.
 
 The `Update_Flake` value is a simple boolean for if you want it to automatically update your flake. This is useful if you want to keep it up to date.
 
