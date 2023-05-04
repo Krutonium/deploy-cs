@@ -25,15 +25,16 @@ And then in your machine specific definitions:
 
 ```nix
 {
- modules = [
-   //... other stuff...
-   ({ pkgs, ... }: {
-     nixpkgs.overlays = [
-       (self: super: {
-          deploy-cs = deploy-cs.defaultPackage.x86_64-linux;
-       })
-     ];
-   })
+   modules = [
+     #... other stuff...
+     ({ pkgs, ... }: {
+       nixpkgs.overlays = [
+         (self: super: {
+            deploy-cs = deploy-cs.defaultPackage.x86_64-linux;
+         })
+       ];
+     })
+   ];
  }
 ```
 
@@ -118,8 +119,10 @@ The IP can also be a hostname if you have reliable hostnames on your LAN. My Mod
 
 This tool requires that the account your SSHing into has passwordless sudo access, and the ability to switch without a password. If you don't have this, you can add it by adding the following to your `configuration.nix`:
 ```nix
-  users.users.<username>.extraGroups = [ "wheel" ];
+{
+  users.users.username.extraGroups = [ "wheel" ];
   security.sudo.wheelNeedsPassword = false;
+}
 ```
 Or just `ssh` into the `root` account (! Bad Practice !).
 
