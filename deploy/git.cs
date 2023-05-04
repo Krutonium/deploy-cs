@@ -7,6 +7,7 @@ public class git
     private static ProcessStartInfo info;
     private static void gitPull()
     {
+        Console.WriteLine("Doing Git Pull");
         Process _process = new Process();
         _process.StartInfo = info;
         info.Arguments = "pull";
@@ -18,6 +19,7 @@ public class git
 
     private static void gitPush()
     {
+        Console.WriteLine("Doing Git Push");
         info.Arguments = "push";
         Process _process = new Process();
         _process.StartInfo = info;
@@ -29,6 +31,7 @@ public class git
     }
     private static void gitAdd()
     {
+        Console.WriteLine("Doing Git Add");
         Process _process = new Process();
         _process.StartInfo = info;
         info.Arguments = "add .";
@@ -39,6 +42,7 @@ public class git
     }
     private static void gitCommit()
     {
+        Console.WriteLine("Doing Git Commit");
         Process _process = new Process();
         _process.StartInfo = info;
         info.Arguments = "commit -m \"Deploy\"";
@@ -50,6 +54,7 @@ public class git
 
     public static void gitSync(string path)
     {
+        Console.Title = "Git Sync";
         Console.WriteLine("Doing Git Sync");
         info = new ProcessStartInfo();
         info.RedirectStandardError = true;

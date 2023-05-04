@@ -34,6 +34,7 @@ namespace deploy
             var builtDevices = new List<Machine>();
             foreach (var device in onlineDevices)
             {
+                Console.Title = $"Building {device.Name}";
                 Console.WriteLine("Building {0}", device.Name);
                 ProcessStartInfo psi = new ProcessStartInfo();
                 psi.FileName = "nix";
@@ -74,6 +75,7 @@ namespace deploy
             }
             
             Console.WriteLine("Deploying to all online devices");
+            Console.Title = "Deploying to all online devices";
             //Deploy in parallel to all online devices (up to CPU count, iirc).
             Parallel.ForEach(builtDevices, _parallelOptions, device =>
             {
@@ -110,6 +112,7 @@ namespace deploy
         }
 
         public static List<Machine> OnlineDevices(Config config){
+            Console.Title = "Checking for Online Devices...";
             Console.WriteLine("Checking for online devices");
             List<Machine> devices = new List<Machine>(); 
             List<Process> processes = new List<Process>();
