@@ -127,8 +127,11 @@ namespace deploy
 
             });
             foreach(var proc in processes){
-                proc.Kill();
-                proc.Close();
+                if (!proc.HasExited)
+                {
+                    proc.Kill();
+                    proc.Close();
+                }
             }
             return devices;
         }
