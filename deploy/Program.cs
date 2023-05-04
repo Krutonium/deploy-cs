@@ -107,11 +107,13 @@ namespace deploy
         public static List<Machine> OnlineDevices(Config config){
             Console.WriteLine("Checking for online devices");
             List<Machine> devices = new List<Machine>(); 
+            List<Process> processes = new List<Process>();
             Parallel.ForEach(config._machines, _parallelOptions, device => { 
                 ProcessStartInfo psi = new ProcessStartInfo();
                 psi.FileName = "nix";
                 psi.Arguments = "store ping --store ssh://" + device.Ip;
                 Process process = Process.Start(psi) ?? throw new InvalidOperationException();
+                processes.Add(process);
                 process?.WaitForExit(5000);
                 if (process is {HasExited: true})
                 {
@@ -124,6 +126,10 @@ namespace deploy
                 }
 
             });
+            foreach(var proc in processes){
+                proc.Kill();
+                proc.Close();
+            }
             return devices;
         }
     } 
