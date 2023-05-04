@@ -15,11 +15,13 @@ Inside of this file, you will want to configure each host.
 And then add it to your system's `flake.nix` like this:
 
 ```nix
-inputs = {
-  deploy-cs.url = "github:Krutonium/deploy-cs";
-  deploy-cs.inputs.nixpkgs.follows = "nixpkgs";
+{
+  inputs = {
+    deploy-cs.url = "github:Krutonium/deploy-cs";
+    deploy-cs.inputs.nixpkgs.follows = "nixpkgs"; 
+  };
+  outputs = { deploy-cs }:{ };
 }
-outputs = { ..., ..., deploy-cs }:
 ```
 And then in your machine specific definitions:
 
