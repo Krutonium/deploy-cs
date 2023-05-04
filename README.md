@@ -24,8 +24,9 @@ outputs = { ..., ..., deploy-cs }:
 And then in your machine specific definitions:
 
 ```nix
-modules = [
-   ... other stuff...
+{
+ modules = [
+   //... other stuff...
    ({ pkgs, ... }: {
      nixpkgs.overlays = [
        (self: super: {
@@ -33,14 +34,17 @@ modules = [
        })
      ];
    })
+ }
 ```
 
 And finally
 
 ```nix
+{
 environment.systemPackages = [
   pkgs.deploy-cs
 ];
+}
 ```
 
 ## Configuration
