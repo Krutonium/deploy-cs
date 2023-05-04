@@ -36,9 +36,12 @@ namespace deploy
             {
                 Console.WriteLine("Building {0}", device.Name);
                 ProcessStartInfo psi = new ProcessStartInfo();
-                psi.FileName = "nixos-rebuild";
-                psi.Arguments = $"build --flake .#{device.Name} --out-link {device.Name}";
-                psi.RedirectStandardOutput = true;
+                psi.FileName = "nix";
+                //psi.Arguments = $"build --flake .#{device.Name} --out-link {device.Name}";
+                psi.Arguments = $"build --profile /nix/var/nix/profiles/system " +
+                                $".#nixosConfigurations.{device.Name}.config.system.build.toplevel" +
+                                $"--out-link {device.Name}";
+                    psi.RedirectStandardOutput = true;
                 psi.RedirectStandardError = true;
                 psi.UseShellExecute = false;
                 psi.CreateNoWindow = true;
