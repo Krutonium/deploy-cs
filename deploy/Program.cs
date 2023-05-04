@@ -19,7 +19,11 @@ namespace deploy
                 Console.WriteLine("Please edit {0} and re-run the application", path);
                 Environment.Exit(1);
             }
-
+            if (config.Update_Flake)
+            {
+                Console.WriteLine("Updating Flake Lockfile");
+                Process.Start("nix", "flake update --commit-lock-file");
+            }
             git.gitSync(".");
             _parallelOptions.MaxDegreeOfParallelism = config.MaxParallel;
             var onlineDevices = OnlineDevices(config);
@@ -29,10 +33,7 @@ namespace deploy
                 Console.WriteLine(dev.Name);
             }
             //Update Flake Lock if Enabled
-            if (config.Update_Flake)
-            {
-                Process.Start("nix", "flake update --commit-lock-file");
-            }
+
 
             //Build Derivations
             Console.WriteLine("Building Derivations");
