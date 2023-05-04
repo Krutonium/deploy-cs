@@ -37,10 +37,15 @@ namespace deploy
                 Console.WriteLine("Building {0}", device.Name);
                 ProcessStartInfo psi = new ProcessStartInfo();
                 psi.FileName = "nix";
-                //psi.Arguments = $"build --flake .#{device.Name} --out-link {device.Name}";
+                string tempPath = $"{Path.GetTempPath()}/{device.Name}";
+                if (File.Exists(tempPath))
+                {
+                    File.Delete(tempPath);
+                }
+
                 psi.Arguments = $"build --profile /nix/var/nix/profiles/system " +
                                 $".#nixosConfigurations.{device.Name}.config.system.build.toplevel " +
-                                $"--out-link {device.Name}";
+                                $"--out-link {tempPath}";
                     psi.RedirectStandardOutput = true;
                 psi.RedirectStandardError = true;
                 psi.UseShellExecute = false;
