@@ -39,7 +39,7 @@ namespace deploy
                 psi.FileName = "nix";
                 //psi.Arguments = $"build --flake .#{device.Name} --out-link {device.Name}";
                 psi.Arguments = $"build --profile /nix/var/nix/profiles/system " +
-                                $".#nixosConfigurations.{device.Name}.config.system.build.toplevel" +
+                                $".#nixosConfigurations.{device.Name}.config.system.build.toplevel " +
                                 $"--out-link {device.Name}";
                     psi.RedirectStandardOutput = true;
                 psi.RedirectStandardError = true;
