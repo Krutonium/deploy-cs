@@ -14,7 +14,7 @@ Inside of this file, you will want to configure each host.
 
 And then add it to your system's `flake.nix` like this:
 
-```
+```nix
 inputs = {
   ...
   ...
@@ -25,7 +25,7 @@ outputs = { ..., ..., deploy-cs }:
 ```
 And then in your machine specific definitions:
 
-```
+```nix
 modules = [
    ... other stuff...
    ({ pkgs, ... }: {
@@ -39,7 +39,7 @@ modules = [
 
 And finally
 
-```
+```nix
 environment.systemPackages = [
   pkgs.deploy-cs
 ];
@@ -48,7 +48,7 @@ environment.systemPackages = [
 ## Configuration
 
 Inside `config.json` You'll see a default configuration with mostly nonsense values. My config looks like this:
-```
+```json
 {
   "MaxParallel": 5,
   "Update_Flake": true,
