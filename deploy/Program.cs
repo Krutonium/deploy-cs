@@ -124,7 +124,7 @@ namespace deploy
             Parallel.ForEach(config._machines, _parallelOptions, device => { 
                 ProcessStartInfo psi = new ProcessStartInfo();
                 psi.FileName = "nix";
-                psi.Arguments = "store ping --store ssh://" + device.Ip;
+                psi.Arguments = $"store ping --store ssh://{device.Ip} --timeout 5";
                 Process process = Process.Start(psi) ?? throw new InvalidOperationException();
                 processes.Add(process);
                 process?.WaitForExit(5000);
@@ -139,13 +139,6 @@ namespace deploy
                 }
 
             });
-            foreach(var proc in processes){
-                if (!proc.HasExited)
-                {
-                    proc.Kill();
-                    proc.Close();
-                }
-            }
             return devices;
         }
     } 
