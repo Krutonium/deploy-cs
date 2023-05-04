@@ -8,12 +8,14 @@ Bootstrapping this package boils down to:
 
 ## Installation
 
-`nix shell github:Krutonium/deploy-cs`
-And then type `deploy` in the folder with your `flake.nix` file. It'll create a `config.json` for you to edit.
-Inside of this file, you will want to configure each host.
+1. Run `nix shell github:Krutonium/deploy-cs`
+2. Go to the directory containing your `flake.nix` and run `deploy`
+3. Edit your `flake.nix` to add it to your nixpkgs and install it (Details Below)
+4. Edit your `config.json` to add your hosts. `name` for each host should match the hostname in the flake. (See Configuration)
 
-And then add it to your system's `flake.nix` like this:
+### Adding it to your flake:
 
+Inputs:
 ```nix
 {
   inputs = {
@@ -23,8 +25,8 @@ And then add it to your system's `flake.nix` like this:
   outputs = { deploy-cs }:{ };
 }
 ```
-And then in your machine specific definitions:
 
+Overlays: 
 ```nix
 {
    modules = [
@@ -40,19 +42,18 @@ And then in your machine specific definitions:
  }
 ```
 
-And finally
-
+Installation:
 ```nix
 {
-environment.systemPackages = [
-  pkgs.deploy-cs
-];
+  environment.systemPackages = [
+    pkgs.deploy-cs
+  ];
 }
 ```
 
 ## Configuration
 
-Inside `config.json` You'll see a default configuration with mostly nonsense values. My config looks like this:
+Inside `config.json` You'll see a default configuration with mostly nonsense values. My finished config looks like this:
 ```json
 {
   "MaxParallel": 5,
