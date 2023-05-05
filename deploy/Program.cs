@@ -22,6 +22,7 @@ namespace deploy
 
             if (config.Update_Flake)
             {
+                //Update Flake Lock if Enabled
                 Console.WriteLine("Updating Flake Lockfile");
                 Process.Start("nix", "flake update --commit-lock-file").WaitForExit();
                 
@@ -34,51 +35,16 @@ namespace deploy
             {
                 Console.WriteLine(dev.Name);
             }
-            //Update Flake Lock if Enabled
-
-
+            
             //Build Derivations
             Console.WriteLine("Building Derivations");
             var builtDevices = new List<Machine>();
             foreach (var device in onlineDevices)
             {
-                Console.Title = $"Building {device.Name}";
-                Console.WriteLine("Building {0}", device.Name);
-                ProcessStartInfo psi = new ProcessStartInfo();
-                psi.FileName = "nix";
-                string tempPath = $"{Path.GetTempPath()}/{device.Name}";
-                if (File.Exists(tempPath))
+                if (Build(device))
                 {
-                    File.Delete(tempPath);
-                }
-
-                psi.Arguments = $"build .#nixosConfigurations.{device.Name}.config.system.build.toplevel " +
-                                $"--out-link {tempPath}";
-                psi.RedirectStandardOutput = true;
-                psi.RedirectStandardError = true;
-                psi.UseShellExecute = false;
-                psi.CreateNoWindow = true;
-                psi.WorkingDirectory = Path.GetFullPath(".");
-                Process process = new Process();
-                process.StartInfo = psi;
-                process.OutputDataReceived +=
-                    (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
-                process.ErrorDataReceived +=
-                    (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
-                process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-                process.WaitForExit();
-                if (process is {ExitCode: 0})
-                {
-                    Console.WriteLine("Built {0}", device.Name);
                     builtDevices.Add(device);
                 }
-                else
-                {
-                    Console.WriteLine("Failed to build {0}", device.Name);
-                }
-                process.Close();
             }
             
             Console.WriteLine("Deploying to all online devices");
@@ -86,45 +52,114 @@ namespace deploy
             //Deploy in parallel to all online devices (up to CPU count, iirc).
             Parallel.ForEach(builtDevices, _parallelOptions, device =>
             {
-                string tempPath = $"{Path.GetTempPath()}/{device.Name}";
-                Console.WriteLine("Deploying to {0}", device.Name);
-                ProcessStartInfo psi = new ProcessStartInfo();
-                psi.FileName = "nix";
-                psi.Arguments = $"copy --to ssh://{device.User}@{device.Ip} {tempPath}";
-                psi.RedirectStandardOutput = true;
-                psi.RedirectStandardError = true;
-                psi.UseShellExecute = false;
-                psi.CreateNoWindow = true;
-                psi.WorkingDirectory = Path.GetFullPath(".");
-                Process process = new Process();
-                process.StartInfo = psi;
-                process.OutputDataReceived +=
-                    (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
-                process.ErrorDataReceived +=
-                    (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
-                process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-                process.WaitForExit();
-                psi.FileName = "ssh";
-                psi.Arguments =
-                    $"ssh {device.User}@{device.Ip} -t '{ReadLink(tempPath)}/bin/switch-to-configuration {device.Verb}'";
-                Console.WriteLine(psi.Arguments);
-                process.Start();
-                process.WaitForExit();
-                if (process is {ExitCode: 0})
-                {
-                    Console.WriteLine("Deployed to {0}", device.Name);
-                }
-                else
-                {
-                    Console.WriteLine("Failed to deploy to {0}", device.Name);
-                }
-                process.Close();
+                Program p = new Program();
+                p.CopyToMachine(device);
+                p.Switch(device);
             });
 
         }
 
+        public static bool Build(Machine device)
+        {
+            Console.Title = $"Building {device.Name}";
+            Console.WriteLine("Building {0}", device.Name);
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = "nix";
+            string tempPath = $"{Path.GetTempPath()}/{device.Name}";
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
+            psi.Arguments = $"build .#nixosConfigurations.{device.Name}.config.system.build.toplevel " +
+                            $"--out-link {tempPath}";
+            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardError = true;
+            psi.UseShellExecute = false;
+            psi.CreateNoWindow = true;
+            psi.WorkingDirectory = Path.GetFullPath(".");
+            Process process = new Process();
+            process.StartInfo = psi;
+            process.OutputDataReceived +=
+                (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
+            process.ErrorDataReceived +=
+                (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            process.WaitForExit();
+            bool Success = false;
+            if (process is {ExitCode: 0})
+            {
+                Console.WriteLine("Built {0}", device.Name);
+                Success = true;
+            }
+            else
+            {
+                Console.WriteLine("Failed to build {0}", device.Name);
+            }
+            process.Close();
+            return Success;
+        }
+
+        public void CopyToMachine(Machine device)
+        {
+            string tempPath = $"{Path.GetTempPath()}/{device.Name}";
+            Console.WriteLine("Deploying to {0}", device.Name);
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = "nix";
+            psi.Arguments = $"copy --to ssh://{device.User}@{device.Ip} {tempPath}";
+            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardError = true;
+            psi.UseShellExecute = false;
+            psi.CreateNoWindow = true;
+            psi.WorkingDirectory = Path.GetFullPath(".");
+            Process process = new Process();
+            process.StartInfo = psi;
+            process.OutputDataReceived +=
+                (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
+            process.ErrorDataReceived +=
+                (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            process.WaitForExit();
+            if (process.ExitCode != 0)
+            {
+                Console.WriteLine("Failed to copy to {0}", device.Name);
+            }
+        }
+
+        public void Switch(Machine device)
+        {
+            Console.WriteLine("Switching on {0}", device.Name);
+            string tempPath = $"{Path.GetTempPath()}/{device.Name}";
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = "ssh";
+            psi.Arguments =
+                $"ssh {device.User}@{device.Ip} -t '{ReadLink(tempPath)}/bin/switch-to-configuration {device.Verb}'";
+            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardError = true;
+            psi.UseShellExecute = false;
+            psi.CreateNoWindow = true;
+            psi.WorkingDirectory = Path.GetFullPath(".");
+            Process process = new Process();
+            process.StartInfo = psi;
+            process.Start();
+            process.OutputDataReceived += (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
+            process.ErrorDataReceived += (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            process.WaitForExit();
+            if (process.ExitCode == 0)
+            {
+                Console.WriteLine("Deployed to {0}", device.Name);
+            }
+            else
+            {
+                Console.WriteLine("Failed to deploy to {0}", device.Name);
+            }
+            process.Close();
+        }
 
         public static string ReadLink(string path)
         {
