@@ -146,9 +146,15 @@ namespace deploy
             process.StartInfo = psi;
             process.Start();
             process.OutputDataReceived += (sender, eventArgs) =>
-                Console.WriteLine($"{device.Name}: {eventArgs.Data}{Environment.NewLine}");
+            {
+                Console.WriteLine($"{device.Name}: {eventArgs.Data}");
+                Console.SetCursorPosition(0, Console.GetCursorPosition().Top);
+            };
             process.ErrorDataReceived += (sender, eventArgs) => 
-                Console.WriteLine($"{device.Name}: {eventArgs.Data}{Environment.NewLine}");
+            {
+                Console.WriteLine($"{device.Name}: {eventArgs.Data}");
+                Console.SetCursorPosition(0, Console.GetCursorPosition().Top);
+            };
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
             process.WaitForExit();
