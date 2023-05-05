@@ -90,7 +90,7 @@ namespace deploy
                 Console.WriteLine("Deploying to {0}", device.Name);
                 ProcessStartInfo psi = new ProcessStartInfo();
                 psi.FileName = "nix";
-                psi.Arguments = $"copy --to ssh://{device.User}@{device} {tempPath}";
+                psi.Arguments = $"copy --to ssh://{device.User}@{device.Ip} {tempPath}";
                 psi.RedirectStandardOutput = true;
                 psi.RedirectStandardError = true;
                 psi.UseShellExecute = false;
