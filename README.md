@@ -99,9 +99,6 @@ Inside `config.json` You'll see a default configuration with mostly nonsense val
 
 ```
 
-MaxParallel
- : 5
-
 The `MaxParallel` value is the maximum number of machines to run at once. This is useful if you have a lot of machines and don't want to overload your network. It limits two things specifically:
   - The Number of computers to ping at the same time (to check if they're online and ready)
   - The number of computers to run `nixos-rebuild switch` on at the same time.
