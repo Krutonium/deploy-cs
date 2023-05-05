@@ -4,6 +4,8 @@ So, you're tired of colmena, deploy-rs and the rest, you want something that doe
 
 Well have I got a solution for you!
 
+[![asciicast](https://asciinema.org/a/582593.svg)](https://asciinema.org/a/582593)
+
 Bootstrapping this package boils down to:
 
 ## Installation
