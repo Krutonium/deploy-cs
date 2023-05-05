@@ -108,8 +108,7 @@ namespace deploy
                 process.WaitForExit();
                 psi.FileName = "ssh";
                 psi.Arguments =
-                    $"ssh {device.User}@{device.Ip} -- sudo {ReadLink(tempPath)}/bin/switch-to-configuration {device.Verb}";
-                Console.WriteLine(psi.Arguments);
+                    $"ssh {device.User}@{device.Ip} -t 'sudo {ReadLink(tempPath)}/bin/switch-to-configuration {device.Verb}'";
                 process.Start();
                 process.WaitForExit();
                 if (process is {ExitCode: 0})
