@@ -136,7 +136,7 @@ namespace deploy
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = "ssh";
             psi.Arguments =
-                $"{device.User}@{device.Ip} -t '{ReadLink(tempPath)}/bin/switch-to-configuration {device.Verb}'";
+                $"{device.User}@{device.Ip} -t \"{ReadLink(tempPath)}/bin/switch-to-configuration {device.Verb}\"";
             psi.RedirectStandardOutput = true;
             psi.RedirectStandardError = true;
             psi.UseShellExecute = false;
