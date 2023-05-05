@@ -19,11 +19,7 @@ namespace deploy
                 Console.WriteLine("Please edit {0} and re-run the application", path);
                 Environment.Exit(1);
             }
-            if (Environment.UserName != "root")
-            {
-                Console.WriteLine("Due to the way Nix works, apparently we need Root locally. Please run this tool with sudo, or make a PR with a fix.");
-                Environment.Exit(2);
-            }
+
             if (config.Update_Flake)
             {
                 Console.WriteLine("Updating Flake Lockfile");
@@ -56,10 +52,9 @@ namespace deploy
                     File.Delete(tempPath);
                 }
 
-                psi.Arguments = $"build --profile /nix/var/nix/profiles/system " +
-                                $".#nixosConfigurations.{device.Name}.config.system.build.toplevel " +
+                psi.Arguments = $"build .#nixosConfigurations.{device.Name}.config.system.build.toplevel " +
                                 $"--out-link {tempPath}";
-                    psi.RedirectStandardOutput = true;
+                psi.RedirectStandardOutput = true;
                 psi.RedirectStandardError = true;
                 psi.UseShellExecute = false;
                 psi.CreateNoWindow = true;
@@ -91,10 +86,11 @@ namespace deploy
             //Deploy in parallel to all online devices (up to CPU count, iirc).
             Parallel.ForEach(builtDevices, _parallelOptions, device =>
             {
+                string tempPath = $"{Path.GetTempPath()}/{device.Name}";
                 Console.WriteLine("Deploying to {0}", device.Name);
                 ProcessStartInfo psi = new ProcessStartInfo();
-                psi.FileName = "nixos-rebuild";
-                psi.Arguments = $"{device.Verb} --flake .#{device.Name} --target-host {device.User}@{device.Ip} --use-remote-sudo";
+                psi.FileName = "nix";
+                psi.Arguments = $"copy --to ssh://{device.User}@{device} {tempPath}";
                 psi.RedirectStandardOutput = true;
                 psi.RedirectStandardError = true;
                 psi.UseShellExecute = false;
@@ -109,6 +105,11 @@ namespace deploy
                 process.Start();
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
+                process.WaitForExit();
+                psi.FileName = "ssh";
+                psi.Arguments =
+                    $"ssh {device.User}@{device.Ip} -- sudo $(readlink -f result)/bin/switch-to-configuration {device.Verb}";
+                process.Start();
                 process.WaitForExit();
                 if (process is {ExitCode: 0})
                 {
