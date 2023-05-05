@@ -106,11 +106,9 @@ namespace deploy
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
                 process.WaitForExit();
-                string path = Mono.Unix.UnixPath.GetRealPath(tempPath);
-                Console.WriteLine(path);
                 psi.FileName = "ssh";
                 psi.Arguments =
-                    $"ssh {device.User}@{device.Ip} -- sudo {path}/bin/switch-to-configuration {device.Verb}";
+                    $"ssh {device.User}@{device.Ip} -- sudo {ReadLink(tempPath)}/bin/switch-to-configuration {device.Verb}";
                 process.Start();
                 process.WaitForExit();
                 if (process is {ExitCode: 0})
@@ -126,6 +124,30 @@ namespace deploy
 
         }
 
+
+        public static string ReadLink(string path)
+        {
+            var proc = new Process 
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "readlink",
+                    Arguments = "-f " + path,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                }
+            };
+            proc.Start();
+            string output = "";
+            while (!proc.StandardOutput.EndOfStream)
+            {
+                output += proc.StandardOutput.ReadLine();
+            }
+
+            return output;
+        }
+        
         public static List<Machine> OnlineDevices(Config config){
             Console.Title = "Checking for Online Devices...";
             Console.WriteLine("Checking for online devices");
