@@ -19,6 +19,11 @@ namespace deploy
                 Console.WriteLine("Please edit {0} and re-run the application", path);
                 Environment.Exit(1);
             }
+            if (Environment.UserName != "root")
+            {
+                Console.WriteLine("Due to the way Nix works, apparently we need Root locally. Please run this tool with sudo, or make a PR with a fix.");
+                Environment.Exit(2);
+            }
             if (config.Update_Flake)
             {
                 Console.WriteLine("Updating Flake Lockfile");
