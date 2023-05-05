@@ -148,12 +148,10 @@ namespace deploy
             process.OutputDataReceived += (sender, eventArgs) =>
             {
                 Console.WriteLine($"{device.Name}: {eventArgs.Data}");
-                Console.SetCursorPosition(0, Console.GetCursorPosition().Top);
             };
             process.ErrorDataReceived += (sender, eventArgs) => 
             {
                 Console.WriteLine($"{device.Name}: {eventArgs.Data}");
-                Console.SetCursorPosition(0, Console.GetCursorPosition().Top);
             };
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
@@ -167,6 +165,7 @@ namespace deploy
                 Console.WriteLine("Failed to deploy to {0}", device.Name);
             }
             process.Close();
+            Console.WriteLine("(If you happen to know how to fix the output from SSH being spread across the screen, please make a PR!");
         }
 
         public static string ReadLink(string path)
