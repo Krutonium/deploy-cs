@@ -50,13 +50,33 @@ namespace deploy
             Console.WriteLine("Deploying to all online devices");
             Console.Title = "Deploying to all online devices";
             //Deploy in parallel to all online devices (up to CPU count, iirc).
+            Dictionary<string, bool> DeviceResults = new Dictionary<string, bool>();
             Parallel.ForEach(builtDevices, _parallelOptions, device =>
             {
                 Program p = new Program();
                 p.CopyToMachine(device);
-                p.Switch(device);
+                var result = p.Switch(device);
+                DeviceResults.Add(device.Name, result);
             });
+            Console.WriteLine("Deployed to all online devices");
+            Console.WriteLine("Results:");
+            foreach (var device in DeviceResults)
+            {
+                switch (device.Value)
+                {
+                    case true:
+                        Console.WriteLine($"{device.Key}: Success");
+                        break;
+                    case false:
+                        Console.WriteLine($"{device.Key}: Failure");
+                        break;
+                }
+            }
 
+            if (DeviceResults.ContainsValue(false))
+            {
+                Console.WriteLine("To diagnose issues, do the deploy manually to see output.");
+            }
         }
 
         public static bool Build(Machine device)
@@ -129,7 +149,7 @@ namespace deploy
             }
         }
 
-        public void Switch(Machine device)
+        public bool Switch(Machine device)
         {
             Console.WriteLine("Switching on {0}", device.Name);
             string tempPath = $"{Path.GetTempPath()}/{device.Name}";
@@ -153,16 +173,20 @@ namespace deploy
             {
                 Console.WriteLine($"{device.Name}: {eventArgs.Data}");
             };
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
+            //process.BeginOutputReadLine();
+            //process.BeginErrorReadLine();
             process.WaitForExit();
             if (process.ExitCode == 0)
             {
                 Console.WriteLine("Deployed to {0}", device.Name);
+                process.Close();
+                return true;
             }
             else
             {
                 Console.WriteLine("Failed to deploy to {0}", device.Name);
+                process.Close();
+                return false;
             }
             process.Close();
             Console.WriteLine("(If you happen to know how to fix the output from SSH being spread across the screen, please make a PR!");
