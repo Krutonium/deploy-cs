@@ -62,19 +62,24 @@ namespace deploy
             Console.WriteLine("Results:");
             string Success = "✅ Success! ✅";
             String Failure = "❌ Failure! ❌";
+            ConsoleColor originalColor = Console.ForegroundColor;
             foreach (var device in DeviceResults)
             {
                 switch (device.Value)
                 {
                     case true:
+                        Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write($"{device.Key}:");
                         Console.CursorLeft = Console.BufferWidth - Success.Length;
                         Console.WriteLine(Success);
+                        Console.ForegroundColor = originalColor;
                         break;
                     case false:
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write($"{device.Key}:");
                         Console.CursorLeft = Console.BufferWidth - Failure.Length;
                         Console.WriteLine(Failure);
+                        Console.ForegroundColor = originalColor;
                         break;
                 }
             }
