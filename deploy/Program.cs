@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
+using Renci.SshNet;
 
 namespace deploy 
 {
@@ -55,7 +56,7 @@ namespace deploy
             {
                 Program p = new Program();
                 p.CopyToMachine(device);
-                var result = p.Switch(device);
+                var result = p.Switch(device, config);
                 DeviceResults.Add(device.Name, result);
             });
             Console.WriteLine("Deployed to all online devices");
@@ -99,13 +100,7 @@ namespace deploy
             psi.WorkingDirectory = Path.GetFullPath(".");
             Process process = new Process();
             process.StartInfo = psi;
-            process.OutputDataReceived +=
-                (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
-            process.ErrorDataReceived +=
-                (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
             process.Start();
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
             process.WaitForExit();
             bool Success = false;
             if (process is {ExitCode: 0})
@@ -121,7 +116,7 @@ namespace deploy
             return Success;
         }
 
-        public void CopyToMachine(Machine device)
+        public bool CopyToMachine(Machine device)
         {
             string tempPath = $"{Path.GetTempPath()}/{device.Name}";
             Console.WriteLine("Deploying to {0}", device.Name);
@@ -135,61 +130,58 @@ namespace deploy
             psi.WorkingDirectory = Path.GetFullPath(".");
             Process process = new Process();
             process.StartInfo = psi;
-            process.OutputDataReceived +=
-                (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
-            process.ErrorDataReceived +=
-                (sender, eventArgs) => Console.WriteLine($"{device.Name}: {eventArgs.Data}");
-            process.Start();
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
             process.WaitForExit();
             if (process.ExitCode != 0)
             {
                 Console.WriteLine("Failed to copy to {0}", device.Name);
+                return false;
             }
+
+            return true;
         }
 
-        public bool Switch(Machine device)
+        public bool Switch(Machine device, Config config)
         {
             Console.WriteLine("Switching on {0}", device.Name);
             string tempPath = $"{Path.GetTempPath()}/{device.Name}";
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.FileName = "ssh";
-            psi.Arguments =
-                $"{device.User}@{device.Ip} -t \"{ReadLink(tempPath)}/bin/switch-to-configuration {device.Verb}\"";
-            psi.RedirectStandardOutput = true;
-            psi.RedirectStandardError = true;
-            psi.UseShellExecute = false;
-            psi.CreateNoWindow = true;
-            psi.WorkingDirectory = Path.GetFullPath(".");
-            Process process = new Process();
-            process.StartInfo = psi;
-            process.Start();
-            //process.OutputDataReceived += (sender, eventArgs) =>
-            //{
-            //    Console.WriteLine($"{device.Name}: {eventArgs.Data}");
-            //};
-            //process.ErrorDataReceived += (sender, eventArgs) => 
-            //{
-            //    Console.WriteLine($"{device.Name}: {eventArgs.Data}");
-            //};
-            //process.BeginOutputReadLine();
-            //process.BeginErrorReadLine();
-            process.WaitForExit();
-            if (process.ExitCode == 0)
+            var privateKeyFile = new PrivateKeyFile(config.Path_Private_SSH_Key);
+            var privateKeyAuth = new PrivateKeyAuthenticationMethod(device.User, privateKeyFile);
+            
+            var connectionInfo = new ConnectionInfo(device.Ip, device.User, privateKeyAuth);
+
+            using (var client = new SshClient(connectionInfo))
             {
-                Console.WriteLine("Deployed to {0}", device.Name);
-                process.Close();
-                return true;
+                client.Connect();
+                if (client.IsConnected)
+                {
+                
+                    var command = client.RunCommand($"sudo {ReadLink(tempPath)}/bin/switch-to-configuration {device.Verb}");
+                    using (var reader = new StreamReader(command.OutputStream))
+                    {
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            Console.WriteLine(line);
+                        }
+                    }
+                    if(command.ExitStatus == 0)
+                    {
+                        Console.WriteLine("Switched to {0}", device.Name);
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to switch on {0}", device.Name);
+                        return false;
+                    }
+                    client.Disconnect();
+                }
+                else
+                {
+                    Console.WriteLine("Failed to connect to {0}", device.Name);
+                    return false;
+                }
             }
-            else
-            {
-                Console.WriteLine("Failed to deploy to {0}", device.Name);
-                process.Close();
-                return false;
-            }
-            process.Close();
-            Console.WriteLine("(If you happen to know how to fix the output from SSH being spread across the screen, please make a PR!");
         }
 
         public static string ReadLink(string path)

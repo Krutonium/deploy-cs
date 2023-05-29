@@ -26,6 +26,7 @@ partial class Program
             };
             cfg._machines.Add(m);
             cfg.MaxParallel = 1;
+            cfg.Path_Private_SSH_Key = "/full/path/to/.ssh/id_ed25519";
             JsonSerializerOptions? options = new JsonSerializerOptions();
             options.WriteIndented = true;
             options.IncludeFields = true;
@@ -40,6 +41,7 @@ partial class Program
     {
         public int MaxParallel;
         public bool Update_Flake = true;
+        public string Path_Private_SSH_Key = "This will be used by default unless a different one is defined.";
         public List<Machine> _machines = new List<Machine>();
     }
 
@@ -49,6 +51,7 @@ partial class Program
         public string User;
         public string Ip;
         public string Verb;
+        public string Path_Private_SSH_Key_If_Not_Same;
         public string Comment;
     }
 }
