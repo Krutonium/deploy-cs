@@ -26,7 +26,6 @@ namespace deploy
                 //Update Flake Lock if Enabled
                 Console.WriteLine("Updating Flake Lockfile");
                 Process.Start("nix", "flake update --commit-lock-file").WaitForExit();
-                
             }
             git.gitSync(".");
             _parallelOptions.MaxDegreeOfParallelism = config.MaxParallel;
@@ -61,15 +60,21 @@ namespace deploy
             });
             Console.WriteLine("Deployed to all online devices");
             Console.WriteLine("Results:");
+            string Success = "✅ Success! ✅";
+            String Failure = "❌ Failure! ❌";
             foreach (var device in DeviceResults)
             {
                 switch (device.Value)
                 {
                     case true:
-                        Console.WriteLine($"{device.Key}: Success");
+                        Console.Write($"{device.Key}:");
+                        Console.CursorLeft = Console.BufferWidth - Success.Length;
+                        Console.WriteLine(Success);
                         break;
                     case false:
-                        Console.WriteLine($"{device.Key}: Failure");
+                        Console.Write($"{device.Key}:");
+                        Console.CursorLeft = Console.BufferWidth - Failure.Length;
+                        Console.WriteLine(Failure);
                         break;
                 }
             }
@@ -157,17 +162,9 @@ namespace deploy
                 {
                 
                     var command = client.RunCommand($"sudo {ReadLink(tempPath)}/bin/switch-to-configuration {device.Verb}");
-                    using (var reader = new StreamReader(command.OutputStream))
-                    {
-                        string line;
-                        while ((line = reader.ReadLine()) != null)
-                        {
-                            Console.WriteLine(line);
-                        }
-                    }
                     if(command.ExitStatus == 0)
                     {
-                        Console.WriteLine("Switched to {0}", device.Name);
+                        Console.WriteLine("Switched successfully on {0}", device.Name);
                         return true;
                     }
                     else
