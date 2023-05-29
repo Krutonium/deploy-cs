@@ -130,6 +130,7 @@ namespace deploy
             psi.WorkingDirectory = Path.GetFullPath(".");
             Process process = new Process();
             process.StartInfo = psi;
+            process.Start();
             process.WaitForExit();
             if (process.ExitCode != 0)
             {
