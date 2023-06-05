@@ -42,6 +42,7 @@ partial class Program
         public int MaxParallel;
         public bool Update_Flake = true;
         public string Path_Private_SSH_Key = "This will be used by default unless a different one is defined.";
+        public string LogLocation = "/tmp/deploy.log";
         public List<Machine> _machines = new List<Machine>();
     }
 

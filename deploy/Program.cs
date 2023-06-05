@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
+using System.Text;
 using System.Text.Json;
 using Renci.SshNet;
 
@@ -11,6 +12,8 @@ namespace deploy
         private const string ConfigPath = "config.json";
         private static bool _doNotContinue = false;
         private static ParallelOptions _parallelOptions = new ParallelOptions {MaxDegreeOfParallelism = 1};
+        private static Logger _logger = new Logger();
+        
         static void Main(string[] args)
         {
             var config = ReadConfig();
@@ -20,34 +23,44 @@ namespace deploy
                 Console.WriteLine("Please edit {0} and re-run the application", path);
                 Environment.Exit(1);
             }
-
+            _logger.path = config.LogLocation;
             if (config.Update_Flake)
             {
                 //Update Flake Lock if Enabled
                 Console.WriteLine("Updating Flake Lockfile");
+                _logger.Log("Updating Flake Lockfile");
                 Process.Start("nix", "flake update --commit-lock-file").WaitForExit();
             }
             git.gitSync(".");
             _parallelOptions.MaxDegreeOfParallelism = config.MaxParallel;
+            _logger.Log("Parallelism set to " + config.MaxParallel);
             var onlineDevices = OnlineDevices(config);
             Console.WriteLine("Online Devices: ");
             foreach (var dev in onlineDevices)
             {
                 Console.WriteLine(dev.Name);
+                _logger.Log("Online Device: " + dev.Name);
             }
             
             //Build Derivations
             Console.WriteLine("Building Derivations");
+            _logger.Log("Building Derivations");
             var builtDevices = new List<Machine>();
             foreach (var device in onlineDevices)
             {
                 if (Build(device))
                 {
+                    _logger.Log("Built Derivation: " + device.Name);
                     builtDevices.Add(device);
+                }
+                else
+                {
+                    _logger.Log("Failed to build Derivation: " + device.Name);
                 }
             }
             
             Console.WriteLine("Deploying to all online devices");
+            _logger.Log("Deploying to all online devices");
             Console.Title = "Deploying to all online devices";
             //Deploy in parallel to all online devices (up to CPU count, iirc).
             Dictionary<string, bool> DeviceResults = new Dictionary<string, bool>();
@@ -60,8 +73,8 @@ namespace deploy
             });
             Console.WriteLine("Deployed to all online devices");
             Console.WriteLine("Results:");
-            string Success = "✅ Success! ✅";
-            String Failure = "❌ Failure! ❌";
+            string Success = "✅ Success!";
+            String Failure = "❌ Failure!";
             ConsoleColor originalColor = Console.ForegroundColor;
             foreach (var device in DeviceResults)
             {
@@ -93,6 +106,7 @@ namespace deploy
         public static bool Build(Machine device)
         {
             Console.Title = $"Building {device.Name}";
+            _logger.Log($"Building {device.Name}");
             Console.WriteLine("Building {0}", device.Name);
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = "nix";
@@ -109,6 +123,8 @@ namespace deploy
             psi.CreateNoWindow = true;
             psi.WorkingDirectory = Path.GetFullPath(".");
             Process process = new Process();
+            process.OutputDataReceived += (sender, args) => _logger.Log($"{device.Name}: {args.Data}");
+            process.ErrorDataReceived += (sender, args) => _logger.Log($"{device.Name}: {args.Data}");
             process.StartInfo = psi;
             process.Start();
             process.WaitForExit();
@@ -116,11 +132,12 @@ namespace deploy
             if (process is {ExitCode: 0})
             {
                 Console.WriteLine("Built {0}", device.Name);
+                _logger.Log($"Built {device.Name} Successfully");
                 Success = true;
             }
             else
             {
-                Console.WriteLine("Failed to build {0}", device.Name);
+                Console.WriteLine($"Failed to build {device.Name}");
             }
             process.Close();
             return Success;
@@ -129,6 +146,7 @@ namespace deploy
         public bool CopyToMachine(Machine device)
         {
             string tempPath = $"{Path.GetTempPath()}/{device.Name}";
+            _logger.Log($"Copying {tempPath} to {device.Name}");
             Console.WriteLine("Deploying to {0}", device.Name);
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = "nix";
@@ -140,6 +158,8 @@ namespace deploy
             psi.WorkingDirectory = Path.GetFullPath(".");
             Process process = new Process();
             process.StartInfo = psi;
+            process.OutputDataReceived += (sender, args) => _logger.Log($"{device.Name}: {args.Data}");
+            process.ErrorDataReceived += (sender, args) => _logger.Log($"{device.Name}: {args.Data}");
             process.Start();
             process.WaitForExit();
             if (process.ExitCode != 0)
@@ -155,6 +175,7 @@ namespace deploy
         {
             Console.WriteLine("Switching on {0}", device.Name);
             string tempPath = $"{Path.GetTempPath()}/{device.Name}";
+
             var privateKeyFile = new PrivateKeyFile(config.Path_Private_SSH_Key);
             var privateKeyAuth = new PrivateKeyAuthenticationMethod(device.User, privateKeyFile);
             
